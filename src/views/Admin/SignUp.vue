@@ -64,6 +64,7 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 import useVuelidate from '@vuelidate/core'
 import { required, email, minLength, maxLength, sameAs } from '@vuelidate/validators'
 export default {
@@ -76,7 +77,6 @@ export default {
     },
     data() {
         return {
-            formData: '',
             username: '',
             email: '',
             password: '',
@@ -97,10 +97,19 @@ export default {
     methods: {
         async onSubmit() {
             let formCheck = await this.v$.$validate()
-            
             if (!formCheck) return
-            var formData = new formData();
-            console.log(formData)
+            var formData = {};
+            formData.username=this.username;
+            formData.email=this.email;
+            formData.password=this.password
+
+            //Axios
+            axios.post(
+                'http://127.0.0.1:8000/api/user/register',
+                formData            
+            ).then(function(response){
+                console.log(response) 
+            })
         }
     }
 }
