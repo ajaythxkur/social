@@ -7,7 +7,7 @@
                         <div class="admin-login d-flex justify-content-center">
                             <form class="admin-login-form border rounded p-3 text-center" @submit.prevent="onSubmit"
                                 autocomplete="off">
-                                
+                                <div class="alert" v-if="this.show">{{show}}</div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text" id="user-icon"><img
                                             src="@/assets/icons/Admin/user.svg" alt="user" class="img-fluid"></span>
@@ -65,7 +65,7 @@
 </template>
 <script>
 import axios from 'axios';
-import useVuelidate from '@vuelidate/core'
+import useVuelidate from '@vuelidate/core';
 import { required, email, minLength, maxLength, sameAs } from '@vuelidate/validators'
 export default {
     name: 'SignUpView',
@@ -77,6 +77,7 @@ export default {
     },
     data() {
         return {
+            show:'',
             username: '',
             email: '',
             password: '',
@@ -102,13 +103,24 @@ export default {
             formData.username=this.username;
             formData.email=this.email;
             formData.password=this.password
+            let $this= this;
 
             //Axios
             axios.post(
-                'http://127.0.0.1:8000/api/user/register',
+                'http://localhost:8000/api/user/register',
                 formData            
             ).then(function(response){
-                console.log(response) 
+                var incomingResponse = response.data;
+                console.log(incomingResponse)
+                // this.show = incomingResponse.message;
+                if(incomingResponse.status_code == 1){
+                    console.log("hiihihihih");
+                    $this.$router.push('/login')
+                }else{
+                    console.log("uhuhuhuuhuh");
+
+                    $this.$router.push('/signup');
+                }
             })
         }
     }
